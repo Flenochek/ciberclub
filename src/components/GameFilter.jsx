@@ -22,7 +22,7 @@ const games = [
   { id: 'hs', label: 'HS', logo: '/logos/hs.png' },
   { id: 'mlbb', label: 'MLBB', logo: '/logos/mlbb.png' },
   { id: 'chess', label: 'Шахматы', logo: '/logos/chess.png' },
-  { id: 'tarkov', label: 'Tarkov: Arena', logo: '/logos/tarkov.png' },
+  { id: 'tarkov', label: 'Tarkov: Arena', logo: '/logos/tarkov.png' }
 ];
 
 const GameFilter = ({ selected, onSelect }) => {
@@ -30,78 +30,120 @@ const GameFilter = ({ selected, onSelect }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const visibleGames = games.slice(0, 8);
-  const hiddenGames = games.slice(8);
+  // Формируем visibleGames для ПК, добавляем "Все игры"
+  const visibleGames = isDesktop
+    ? [games[0], ...games.slice(1, 9)] // 8 игр + "Все игры"
+    : isTablet
+    ? games.slice(1, 6) // Для планшетов
+    : [];
 
-  const gameButtonSize = isMobile ? 60 : isTablet ? 100 : 125;
+  const hiddenGames = games
+    .filter((g) => g.id !== 'all')
+    .filter((g) => !visibleGames.some((vg) => vg.id === g.id));
+
+  const gameButtonSize = isMobile ? 70 : isTablet ? 100 : 120;
   const arrowButtonWidth = isMobile ? 50 : 60;
+  const menuWidth = isMobile ? '90vw' : isTablet ? '80vw' : 500;
 
-  const menuWidth = isMobile ? '100%' : isTablet ? '80%' : '500px';
-  const menuItemHeight = isMobile ? 40 : isTablet ? 45 : 50;
-  const menuIconSize = isMobile ? 24 : isTablet ? 28 : 32;
+  const isExtraSelected =
+    !visibleGames.some((g) => g.id === selected) && selected !== 'all';
 
-  const handleSelect = (gameId) => {
-    onSelect(gameId);
+  const handleSelect = (id) => {
+    onSelect(id);
     setAnchorEl(null);
   };
 
   const handleClear = () => onSelect('all');
-  const isExtraSelected = !visibleGames.some(g => g.id === selected) && selected !== 'all';
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-        <Typography variant="h6" fontWeight="bold" fontSize={24} color="white">
-          Популярные игры
-        </Typography>
-        {selected !== 'all' && (
-          <Button
-            size="small"
-            onClick={handleClear}
-            variant="contained"
-            color="primary"
-            sx={{ textTransform: 'none', fontSize: 14, height: 30 }}
-          >
-            Очистить выбор
-          </Button>
-        )}
-      </Box>
+    <Box>
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Typography variant="h6" fontWeight="bold" fontSize={24} color="white">
+            Популярные игры
+          </Typography>
+          {(selected !== 'all' && !isMobile) && (
+            <Button
+              size="small"
+              onClick={handleClear}
+              variant="contained"
+              color="primary"
+              sx={{ textTransform: 'none', fontSize: 14, height: 30 }}
+            >
+              Очистить выбор
+            </Button>
+          )}
+        </Box>
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: 2,
-          mb: 2
-        }}
-      >
-        {visibleGames.map((game) => {
-          const isSelected = selected === game.id;
-          return (
-            <ButtonBase
-              key={game.id}
-              onClick={() => handleSelect(game.id)}
+        {isMobile ? (
+          <>
+            {selected !== 'all' && (
+              <Box sx={{ mb: 1, display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  size="small"
+                  onClick={handleClear}
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    textTransform: 'none',
+                    fontSize: 13,
+                    height: 30
+                  }}
+                  startIcon={<CloseIcon fontSize="small" />}
+                >
+                  Сбросить фильтр
+                </Button>
+              </Box>
+            )}
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
               sx={{
-                width: gameButtonSize,
-                height: gameButtonSize,
-                borderRadius: 2,
-                backgroundColor: '#1F1F1F',
-                border: isSelected ? '3px solid #03A9F4' : '1px solid transparent',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                color: 'white',
-                position: 'relative',
-                '&:hover': { backgroundColor: '#333' },
-                p: 1
+                height: 48,
+                textTransform: 'none',
+                fontSize: 16,
+                fontWeight: 500
               }}
             >
-              {game.id !== 'all' ? (
-                <>
+              Выбрать игру
+            </Button>
+          </>
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: 2,
+              mb: 3
+            }}
+          >
+            {visibleGames.map((game, index) => {
+              const isSelected = selected === game.id;
+              return (
+                <ButtonBase
+                  key={game.id}
+                  onClick={() => handleSelect(game.id)}
+                  sx={{
+                    width: gameButtonSize,
+                    height: gameButtonSize,
+                    borderRadius: 2,
+                    backgroundColor: '#1F1F1F',
+                    border: isSelected ? '3px solid #03A9F4' : '1px solid transparent',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    color: 'white',
+                    position: 'relative',
+                    '&:hover': { backgroundColor: '#333' },
+                    p: 1
+                  }}
+                >
                   <Box
                     sx={{
                       width: 40,
@@ -117,63 +159,55 @@ const GameFilter = ({ selected, onSelect }) => {
                     sx={{
                       fontSize: 14,
                       textTransform: 'capitalize',
-                      textAlign: 'center',
-                      wordBreak: 'break-word'
+                      textAlign: 'center'
                     }}
                   >
                     {game.label}
                   </Typography>
-                </>
-              ) : (
-                <Typography
-                  variant="body2"
-                  sx={{ textTransform: 'capitalize', textAlign: 'center' }}
+                </ButtonBase>
+              );
+            })}
+            {hiddenGames.length > 0 && (
+              <Box sx={{ position: 'relative' }}>
+                <Button
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                  sx={{
+                    width: arrowButtonWidth,
+                    height: gameButtonSize,
+                    minWidth: 'unset',
+                    backgroundColor: '#1F1F1F',
+                    borderRadius: 2,
+                    border: isExtraSelected ? '3px solid #03A9F4' : '1px solid transparent',
+                    color: 'white',
+                    '&:hover': { backgroundColor: '#333' },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: 0,
+                    position: 'relative'
+                  }}
                 >
-                  {game.label}
-                </Typography>
-              )}
-            </ButtonBase>
-          );
-        })}
-
-        <Box sx={{ position: 'relative' }}>
-          <Button
-            onClick={(e) => setAnchorEl(e.currentTarget)}
-            sx={{
-              width: arrowButtonWidth,
-              height: gameButtonSize,
-              minWidth: 'unset',
-              backgroundColor: '#1F1F1F',
-              borderRadius: 2,
-              border: isExtraSelected ? '3px solid #03A9F4' : '1px solid transparent',
-              color: 'white',
-              '&:hover': { backgroundColor: '#333' },
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              p: 0
-            }}
-          >
-            {isExtraSelected && (
-              <Typography
-                variant="caption"
-                sx={{
-                  position: 'absolute',
-                  top: 12,
-                  fontSize: 11,
-                  fontWeight: 400,
-                  lineHeight: 1,
-                  color: '#03A9F4'
-                }}
-              >
-                +1
-              </Typography>
+                  {isExtraSelected && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        position: 'absolute',
+                        top: 10,
+                        fontSize: 11,
+                        fontWeight: 400,
+                        color: '#03A9F4'
+                      }}
+                    >
+                      +1
+                    </Typography>
+                  )}
+                  <KeyboardArrowDownIcon />
+                </Button>
+              </Box>
             )}
-            <KeyboardArrowDownIcon fontSize={isDesktop ? 'large' : 'medium'} />
-          </Button>
-        </Box>
+          </Box>
+        )}
       </Box>
 
       <Menu
@@ -191,41 +225,33 @@ const GameFilter = ({ selected, onSelect }) => {
         PaperProps={{
           sx: {
             width: menuWidth,
-            maxWidth: '95vw',
             p: 2,
             bgcolor: '#121212',
             borderRadius: 2,
             maxHeight: '80vh',
-            mt: 4
+            mt: isTablet ? 3 : 3,
+            ml: isDesktop ? 'auto' : undefined
           }
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mb: 2,
-            position: 'relative'
-          }}
-        >
+        <Box sx={{ position: 'relative' }}>
           <Typography
             variant="subtitle1"
-            color="white"
+            fontWeight="bold"
             sx={{
+              width: '100%',
+              textAlign: 'center',
               fontSize: '1rem',
-              fontWeight: 'bold'
+              color: 'white',
+              mb: 2,
+              mt: 1
             }}
           >
             Выбор игры
           </Typography>
           <IconButton
             onClick={() => setAnchorEl(null)}
-            sx={{
-              position: 'absolute',
-              right: 0,
-              color: 'white'
-            }}
+            sx={{ color: 'white', position: 'absolute', right: 0, top: 0 }}
           >
             <CloseIcon />
           </IconButton>
@@ -235,21 +261,20 @@ const GameFilter = ({ selected, onSelect }) => {
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
-            justifyContent: 'flex-start',
+            justifyContent: isMobile ? 'center' : 'flex-start',
             gap: 1.5,
-            my: 3,
-            overflowY: 'auto'
+            mb: isMobile ? 2 : 4
           }}
         >
-          {hiddenGames.map((game) => {
+          {(isMobile ? games.filter(g => g.id !== 'all') : hiddenGames).map((game) => {
             const isSelected = selected === game.id;
             return (
               <ButtonBase
                 key={game.id}
                 onClick={() => handleSelect(game.id)}
                 sx={{
-                  minWidth: 150,
-                  height: menuItemHeight,
+                  minWidth: 130,
+                  height: isMobile ? 40 : 48,
                   px: 1.5,
                   borderRadius: 2,
                   backgroundColor: '#1F1F1F',
@@ -262,8 +287,8 @@ const GameFilter = ({ selected, onSelect }) => {
               >
                 <Box
                   sx={{
-                    width: menuIconSize,
-                    height: menuIconSize,
+                    width: 24,
+                    height: 24,
                     backgroundImage: `url(${game.logo})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -274,10 +299,7 @@ const GameFilter = ({ selected, onSelect }) => {
                   variant="body2"
                   sx={{
                     fontSize: 14,
-                    textTransform: 'capitalize',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
+                    textTransform: 'capitalize'
                   }}
                 >
                   {game.label}
@@ -287,17 +309,17 @@ const GameFilter = ({ selected, onSelect }) => {
           })}
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="contained"
             onClick={handleClear}
             color="primary"
             sx={{
-              textTransform: 'none',
-              fontSize: 13
+              textTransform: 'capitalize',
+              fontSize: isMobile ? 13 : 14
             }}
           >
-            Очистить фильтр
+            Очистить выбор
           </Button>
         </Box>
       </Menu>

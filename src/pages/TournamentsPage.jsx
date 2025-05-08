@@ -19,46 +19,6 @@ const TournamentsPage = () => {
 
       <RecommendedSlider />
       <GameFilter selected={gameFilter} onSelect={handleGameSelect} />
-
-      <Tabs
-        value={tabIndex}
-        onChange={handleTabChange}
-        textColor="inherit"
-        TabIndicatorProps={{
-          style: {
-            height: 4,
-            backgroundColor: '#2196f3',
-            borderRadius: 2,
-          }
-        }}
-        sx={{ mb: 2 }}
-      >
-        <Tab
-          label="Предстоящие"
-          sx={{
-            textTransform: 'capitalize',
-            fontSize: 16,
-            color: 'white',
-          }}
-        />
-        <Tab
-          label="Текущие"
-          sx={{
-            textTransform: 'capitalize',
-            fontSize: 16,
-            color: 'white',
-          }}
-        />
-        <Tab
-          label="Завершенные"
-          sx={{
-            textTransform: 'capitalize',
-            fontSize: 16,
-            color: 'white',
-          }}
-        />
-      </Tabs>
-
       <TournamentTable gameFilter={gameFilter} tabIndex={tabIndex} />
     </Box>
   );

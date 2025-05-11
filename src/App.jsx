@@ -5,6 +5,8 @@ import RegisterPage from "./pages/RegisterPage";
 import CodePage from "./pages/CodePage";
 import TournamentsPage from "./pages/TournamentsPage"; 
 import Home from "./pages/Home";
+import MatchPage from "./pages/MatchPage";
+
    
  
 
@@ -17,7 +19,8 @@ const App = () => {
         <Route path="/verify-code" element={<CodePage />} /> 
         <Route path="*" element={<LoginPage />} /> */}
         {/* <Route path="*" element={<TournamentsPage />} /> */}
-        <Route path="*" element={<Home />} />
+        {/* <Route path="*" element={<Home />} /> */}
+        <Route path="*" element={<MatchPage  />} />
       </Routes>
     </Router>
   );

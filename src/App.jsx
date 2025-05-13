@@ -6,6 +6,7 @@ import CodePage from "./pages/CodePage";
 import TournamentsPage from "./pages/TournamentsPage"; 
 import Home from "./pages/Home";
 import MatchPage from "./pages/MatchPage";
+import RatingsPage from "./pages/RatingsPage";
 
    
  
@@ -20,7 +21,8 @@ const App = () => {
         <Route path="*" element={<LoginPage />} /> */}
         {/* <Route path="*" element={<TournamentsPage />} /> */}
         {/* <Route path="*" element={<Home />} /> */}
-        <Route path="*" element={<MatchPage  />} />
+        {/* <Route path="*" element={<MatchPage  />} /> */}
+        <Route path="*" element={<RatingsPage/>} />
       </Routes>
     </Router>
   );

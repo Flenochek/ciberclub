@@ -7,6 +7,7 @@ import TournamentsPage from "./pages/TournamentsPage";
 import Home from "./pages/Home";
 import MatchPage from "./pages/MatchPage";
 import RatingsPage from "./pages/RatingsPage";
+import RatingPage from "./pages/RatingPage";
 
    
  
@@ -22,7 +23,8 @@ const App = () => {
         {/* <Route path="*" element={<TournamentsPage />} /> */}
         {/* <Route path="*" element={<Home />} /> */}
         {/* <Route path="*" element={<MatchPage  />} /> */}
-        <Route path="*" element={<RatingsPage/>} />
+        {/* <Route path="*" element={<RatingsPage/>} /> */}
+        <Route path="*" element={<RatingPage/>} />
       </Routes>
     </Router>
   );

@@ -24,9 +24,9 @@ const App = () => {
         {/* <Route path="*" element={<TournamentsPage />} /> */}
         {/* <Route path="*" element={<Home />} /> */}
         {/* <Route path="*" element={<MatchPage  />} /> */}
-        {/* <Route path="*" element={<RatingsPage/>} /> */}
+        <Route path="*" element={<RatingsPage/>} />
         {/* <Route path="*" element={<RatingPage/>} /> */}
-        <Route path="*" element={<TeamsPage/>} />
+        {/* <Route path="*" element={<TeamsPage/>} /> */}
       </Routes>
     </Router>
   );
